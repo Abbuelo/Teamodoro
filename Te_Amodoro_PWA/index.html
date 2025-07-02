@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Te Amodoro</title>
+
+  <!-- Fuente bonita -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+  <!-- Configuración para PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ff69b4">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <style>
+    body {
+      background: url('fondo.jpg') no-repeat center center fixed;
+      background-size: cover;
+      overflow: hidden;
+      margin: 0;
+      height: 100vh;
+      position: relative;
+      font-family: 'Dancing Script', cursive;
+    }
+
+    .teamo {
+      position: absolute;
+      white-space: nowrap;
+      pointer-events: none;
+      animation: float 3s forwards;
+    }
+
+    @keyframes float {
+      0% {
+        opacity: 1;
+        transform: translateY(0) translateX(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-150px) translateX(var(--x-shift)) scale(1.5);
+      }
+    }
+  </style>
+</head>
+<body>
+  <audio id="bg-music" src="cancion.mp3" loop></audio>
+
+  <script>
+    const audio = document.getElementById("bg-music");
+    let started = false;
+
+    const emojis = ['💖', '💘', '💝', '💕', '💞', '⭐', '🌟', '✨', '❤️', '🩷'];
+    const colors = ['#ff69b4', '#ff1493', '#db7093', '#c71585', '#ff0000', '#dc143c', '#800080', '#8a2be2', '#ba55d3'];
+
+    document.body.addEventListener("click", (e) => {
+      if (!started) {
+        audio.play();
+        started = true;
+      }
+
+      const love = document.createElement("div");
+      love.className = "teamo";
+
+      const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+      love.innerText = `${emoji} Te Amodoro Cariño Mío ${emoji}`;
+
+      love.style.left = `${e.clientX}px`;
+      love.style.top = `${e.clientY}px`;
+
+      const size = Math.random() * 2 + 1;
+      love.style.fontSize = `${size}em`;
+
+      const shift = Math.random() > 0.5 ? Math.random() * 50 : -Math.random() * 50;
+      love.style.setProperty('--x-shift', `${shift}px`);
+
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      love.style.color = color;
+
+      document.body.appendChild(love);
+
+      setTimeout(() => {
+        love.remove();
+      }, 3000);
+    });
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').then(reg => {
+        console.log('Service Worker registrado!', reg);
+      }).catch(err => {
+        console.log('Error al registrar Service Worker', err);
+      });
+    }
+  </script>
+</body>
+</html>
